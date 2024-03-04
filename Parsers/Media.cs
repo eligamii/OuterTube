@@ -32,7 +32,7 @@ namespace OuterTube.Parsers
             string minQualityThumbnail = videoJson["musicResponsiveListItemRenderer"]["thumbnail"]["musicThumbnailRenderer"]["thumbnail"]["thumbnails"][0]["url"].Value<string>();
             string maxQualityThumbnail = videoJson["musicResponsiveListItemRenderer"]["thumbnail"]["musicThumbnailRenderer"]["thumbnail"]["thumbnails"][1]["url"].Value<string>();
 
-            var video = new YoutubeMedia(videoId, title, minQualityThumbnail, maxQualityThumbnail, duration, author);
+            var video = new YoutubeMedia() { Id = videoId, Title = title };
             return video;
         }
     }

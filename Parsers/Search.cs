@@ -17,7 +17,9 @@ namespace OuterTube.Parsers
             {
                 foreach (JObject videoJson in contents.musicShelfRenderer.contents)
                 {
-                    videos.Add(Media.Parse(videoJson));
+                    YoutubeMedia media = new();
+
+
                 }
             }
 

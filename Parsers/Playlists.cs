@@ -11,9 +11,9 @@ namespace OuterTube.Parsers
 {
     internal static class Playlists
     {
-        public static Playlist Parse(string json, bool isInfinite)
+        public static YoutubePlaylist Parse(string json, bool isInfinite)
         {
-            Playlist playlist = new();
+            YoutubePlaylist playlist = new();
             dynamic playlistJson = JObject.Parse(json);
             
             foreach(dynamic video in playlistJson.contents
@@ -29,12 +29,13 @@ namespace OuterTube.Parsers
                                                  .contents)
             {
                 string title = video.playlistPanelVideoRenderer.title.runs[0].text;
-                string minQualityThumbnail = video.playlistPanelVideoRenderer.thumbnail.thumbnails[0].url;
-                string? maxQualityThumbnail = (video.playlistPanelVideoRenderer.thumbnail.thumbnails as JArray).Last().Value<JObject>()["url"].Value<string>();
-                string length = video.playlistPanelVideoRenderer.lengthText.runs[0].text;
                 string videoId = video.playlistPanelVideoRenderer.videoId;
 
-                YoutubeMedia media = new(videoId, title, minQualityThumbnail, maxQualityThumbnail, length, "");
+                YoutubeMedia media = new()
+                {
+                    Title = title, Id = videoId
+                };
+
                 playlist.Items.Add(media);
             }
 

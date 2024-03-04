@@ -16,12 +16,12 @@ namespace OuterTube
 
     public class YoutubeMusicClient
     {
-        private string _baseUrl = "https://music.youtube.com/youtubei/v1";
-        private string _webApiKey = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30";
+        internal static string _baseUrl = "https://music.youtube.com/youtubei/v1";
+        internal static string _webApiKey = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30";
         private string _iosApiKey = "AIzaSyBAETezhkwP0ZWA02RsqT1zu78Fpt0bC_s";
 
 
-        private dynamic BaseWebPayload
+        internal static dynamic BaseWebPayload
         {
             get
             {
@@ -43,7 +43,7 @@ namespace OuterTube
             }
         }
 
-        private dynamic BaseIOSPayload // To bypass issues when getting the player
+        internal static dynamic BaseIOSPayload // To bypass issues when getting the player
         {
             get
             {
@@ -55,12 +55,17 @@ namespace OuterTube
             }
         }
 
-
-        public async Task<SearchResult> SearchAsync(string query)
+        /// <summary>
+        /// Return a list of MediaShelf in this specific order
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public async Task<SearchResultElementsCollection> SearchAsync(string query, SearchFilter filter)
         {
             // Create the payload for the request
             dynamic payload = BaseWebPayload;
             payload.query = HttpUtility.HtmlEncode(query); // The search parameter
+            payload.@params = filter.GetParam();
 
             string payloadString = payload.ToString();
             StringContent content = new(payloadString, Encoding.UTF8);
@@ -74,11 +79,11 @@ namespace OuterTube
             // Make the actual request
             var response = await Shared.HttpClient.PostAsync(requestUrl, content);
 
-            return new SearchResult(Search.Parse(await response.Content.ReadAsStringAsync()), "");
+            return new SearchResultElementsCollection(await response.Content.ReadAsStringAsync(), filter);
 
         }
 
-        public async Task<List<MusicShelf>> GetHomeAsync()
+        public async Task<MediaShelfCollection> GetHomeAsync()
         {
             dynamic payload = BaseWebPayload;
             payload.browseId = "FEmusic_home";
@@ -96,13 +101,13 @@ namespace OuterTube
 
             string json = await response.Content.ReadAsStringAsync();
 
-            return Trending.ParseData(json);
+            return MediaShelfCollection.FromJson(json);
         }
 
 
 
 
-        public async Task<Playlist> GetPlaylistAsync(string id)
+        public async Task<YoutubePlaylist> GetPlaylistAsync(string id)
         {
             dynamic payload = BaseWebPayload;
             payload.
