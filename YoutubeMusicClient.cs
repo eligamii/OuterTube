@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using OuterTube.Enums;
-using OuterTube.Parsers;
 using OuterTube.Models;
 using System.Globalization;
 using System.Net.Http;
@@ -127,7 +126,7 @@ namespace OuterTube
             var response = await Shared.HttpClient.PostAsync(requestUrl, content);
 
             string json = await response.Content.ReadAsStringAsync();
-            return Playlists.Parse(json, id.StartsWith("RD"));
+            return YoutubePlaylist.FromJson(json, id.StartsWith("RD"));
         }
 
         public async Task<Player> GetPlayerAsync(YoutubeMedia video) => await GetPlayerAsync(video.Id);
