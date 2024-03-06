@@ -11,9 +11,9 @@ using System.Web;
 
 namespace OuterTube.Models
 {
-    public class SearchResultElementsCollection
+    public class MusicSearchResult
     {
-        internal SearchResultElementsCollection(string json, SearchFilter filter)
+        internal MusicSearchResult(string json, SearchFilter filter)
         {
             Filter = filter;
             dynamic res = JObject.Parse(json);
@@ -52,7 +52,7 @@ namespace OuterTube.Models
         }
 
 
-        public async Task<List<YoutubeElement>> LoadNextItems()
+        public async Task<List<YoutubeElement>> LoadMoreItemsAsync()
         {
             dynamic payload = YoutubeMusicClient.BaseWebPayload;
 
@@ -60,7 +60,7 @@ namespace OuterTube.Models
             StringContent content = new(payloadString, Encoding.UTF8);
 
             // Create the request url
-            string requestUrl = YoutubeMusicClient._baseUrl + "/search?key=" + YoutubeMusicClient._webApiKey + "&ctoken=" + ContinuationToken + "&prettyPrint=false";
+            string requestUrl = YoutubeMusicClient._baseUrl + "/search?key=" + YoutubeMusicClient._webApiKey + "&ctoken=" + ContinuationToken + "&continuation=" + ContinuationToken + "&type=next" + "&prettyPrint=false";
 
             Shared.HttpClient.DefaultRequestHeaders.Remove("Referrer");
             Shared.HttpClient.DefaultRequestHeaders.Add("Referrer", "music.youtube.com");
@@ -68,7 +68,8 @@ namespace OuterTube.Models
             // Make the actual request
             var response = await Shared.HttpClient.PostAsync(requestUrl, content);
 
-            dynamic continuation = response.Content.ReadAsStringAsync();
+            string json = await response.Content.ReadAsStringAsync();
+            dynamic continuation = JObject.Parse(json);
 
             List<YoutubeElement> newElements = [];
 
@@ -86,6 +87,8 @@ namespace OuterTube.Models
 
             Results.AddRange(newElements);
 
+            ContinuationToken = continuation.continuationContents.musicShelfContinuation.continuations[0].nextContinuationData.continuation;
+
             return newElements;
         }
 
@@ -100,6 +103,6 @@ namespace OuterTube.Models
         /// <summary>
         /// The list of search results for the giver query and filter. 
         /// </summary>
-        public static List<YoutubeElement> Results { get; set; } = [];
+        public List<YoutubeElement> Results { get; set; } = [];
     }
 }

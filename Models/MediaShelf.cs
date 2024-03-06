@@ -15,8 +15,8 @@ namespace OuterTube.Models
 
             try
             {
-                shelf.Title = musicCarouselShelfRenderer.header.musicCarouselShelfBasicHeaderRenderer.title.runs[0].text;
-                shelf.Subtitle = musicCarouselShelfRenderer.header.musicCarouselShelfBasicHeaderRenderer.strapline.runs[0].text;
+                 shelf.Title = musicCarouselShelfRenderer.header.musicCarouselShelfBasicHeaderRenderer.title.runs[0].text;
+                 shelf.Subtitle = musicCarouselShelfRenderer.header.musicCarouselShelfBasicHeaderRenderer.strapline.runs[0].text;
             }
             catch { }
 

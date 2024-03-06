@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace OuterTube.Models
             media.Title = flexColums[0].musicResponsiveListItemFlexColumnRenderer.text.runs[0].text;
             foreach(dynamic run in flexColums[1].musicResponsiveListItemFlexColumnRenderer.text.runs) { media.Subtitle += run.text; }
 
-            media.Subtitle += " • " + flexColums[2].musicResponsiveListItemFlexColumnRenderer.text.runs[0].text;
+            try { media.Subtitle += " • " + flexColums[2].musicResponsiveListItemFlexColumnRenderer.text.runs[0].text; } catch { }
             media.Id = musicResponsiveListItemRenderer.playlistItemData.videoId;
 
             return media;

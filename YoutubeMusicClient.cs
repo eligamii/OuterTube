@@ -60,7 +60,7 @@ namespace OuterTube
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        public async Task<SearchResultElementsCollection> SearchAsync(string query, SearchFilter filter)
+        public async Task<MusicSearchResult> SearchAsync(string query, SearchFilter filter)
         {
             // Create the payload for the request
             dynamic payload = BaseWebPayload;
@@ -79,7 +79,7 @@ namespace OuterTube
             // Make the actual request
             var response = await Shared.HttpClient.PostAsync(requestUrl, content);
 
-            return new SearchResultElementsCollection(await response.Content.ReadAsStringAsync(), filter);
+            return new MusicSearchResult(await response.Content.ReadAsStringAsync(), filter);
 
         }
 
@@ -113,7 +113,7 @@ namespace OuterTube
             payload.
             payload.playlistId = id;
             payload.isAudioOnly = true;
-            payload.@params = "wAEB";
+            payload.@params = "wAEB"; // radio
 
             string payloadString = payload.ToString();
             StringContent content = new(payloadString, Encoding.UTF8);
@@ -130,10 +130,11 @@ namespace OuterTube
             return Playlists.Parse(json, id.StartsWith("RD"));
         }
 
-        public async Task<List<string>> GetPlayerAsync(YoutubeMedia video) => await GetPlayerAsync(video.Id);
+        public async Task<Player> GetPlayerAsync(YoutubeMedia video) => await GetPlayerAsync(video.Id);
 
-        public async Task<List<string>> GetPlayerAsync(string videoId)
+        public async Task<Player> GetPlayerAsync(string videoId)
         {
+            
             dynamic payload = BaseIOSPayload;
             payload.videoId = videoId;
 
@@ -149,7 +150,8 @@ namespace OuterTube
             var response = await Shared.HttpClient.PostAsync(requestUrl, content);
 
             string json = await response.Content.ReadAsStringAsync();
-            return StreamingData.ParseForAudioOnly(json);
+             
+            return new Player(FormatCollection.FromJson(json), json);
         }
     }
 }

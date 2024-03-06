@@ -15,23 +15,23 @@ namespace OuterTube.Models
             foreach (dynamic thumbnailJson in thumbnails)
             {
                 MediaThumbnail thumbnail = MediaThumbnail.FromJson(thumbnailJson);
-                collection.Thumbnails.Add(thumbnail);
+                collection._thumbnails.Add(thumbnail);
             }
 
             return collection;
         }
 
-        public List<MediaThumbnail> Thumbnails { get; set; } = new();
+        private List<MediaThumbnail> _thumbnails { get; set; } = new();
         public MediaThumbnail GetForHeight(int height)
         {
-            var ordered = Thumbnails.OrderBy(p => p.Size.Height).ToList();
+            var ordered = _thumbnails.OrderBy(p => p.Size.Height).ToList();
             var thumb = ordered.Find(p => p.Size.Height <= height) ?? ordered.Last();
 
             return thumb;
         }
 
-        public MediaThumbnail? SmallestThumbnail => Thumbnails.OrderBy(p => p.Size.Height).ToList().FirstOrDefault();
-        public MediaThumbnail? BiggestThumbnail => Thumbnails.OrderBy(p => p.Size.Height).ToList().LastOrDefault();
+        public MediaThumbnail? SmallestThumbnail => _thumbnails.OrderBy(p => p.Size.Height).ToList().FirstOrDefault();
+        public MediaThumbnail? BiggestThumbnail => _thumbnails.OrderBy(p => p.Size.Height).ToList().LastOrDefault();
 
     }
 }
