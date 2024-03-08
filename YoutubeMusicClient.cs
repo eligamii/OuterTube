@@ -1,13 +1,12 @@
 ﻿using Newtonsoft.Json.Linq;
 using OuterTube.Enums;
 using OuterTube.Models;
+using OuterTube.Models.Media;
+using OuterTube.Models.Media.Collections;
+using OuterTube.Models.MediaInformation.Collections;
 using System.Globalization;
-using System.Net.Http;
 using System.Text;
-using System.Text.Json.Nodes;
 using System.Web;
-using System.Diagnostics;
-using System.Net.Http.Headers;
 
 
 namespace OuterTube
@@ -55,10 +54,10 @@ namespace OuterTube
         }
 
         /// <summary>
-        /// Return a list of MediaShelf in this specific order
+        /// 
         /// </summary>
         /// <param name="query"></param>
-        /// <returns></returns>
+        /// <returns>A list of MediaShelf in this specific order</returns>
         public async Task<MusicSearchResult> SearchAsync(string query, SearchFilter filter)
         {
             // Create the payload for the request
@@ -103,16 +102,12 @@ namespace OuterTube
             return MediaShelfCollection.FromJson(json);
         }
 
-
-
-
         public async Task<YoutubePlaylist> GetPlaylistAsync(string id)
         {
             dynamic payload = BaseWebPayload;
-            payload.
             payload.playlistId = id;
             payload.isAudioOnly = true;
-            payload.@params = "wAEB"; // radio
+            payload.@params = id.StartsWith("RD") ? "wAEB" : "MPREb_XLbJEEU4CpR"; 
 
             string payloadString = payload.ToString();
             StringContent content = new(payloadString, Encoding.UTF8);
@@ -133,7 +128,7 @@ namespace OuterTube
 
         public async Task<Player> GetPlayerAsync(string videoId)
         {
-            
+
             dynamic payload = BaseIOSPayload;
             payload.videoId = videoId;
 
@@ -149,7 +144,7 @@ namespace OuterTube
             var response = await Shared.HttpClient.PostAsync(requestUrl, content);
 
             string json = await response.Content.ReadAsStringAsync();
-             
+
             return new Player(FormatCollection.FromJson(json), json);
         }
     }

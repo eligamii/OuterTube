@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Headers;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OuterTube
 {
@@ -26,7 +20,7 @@ namespace OuterTube
             var __Secure_3PSIDCC_Cookie = new Cookie("__Secure-3PSIDCC", __Secure_3PSIDCC, "/", ".youtube.com")
             {
                 Secure = true,
-                HttpOnly = true,              
+                HttpOnly = true,
             };
 
             var __Secure_1PSIDCC_Cookie = new Cookie("__Secure-1PSIDCC", __Secure_1PSIDCC, "/", ".youtube.com")
@@ -46,7 +40,7 @@ namespace OuterTube
 
             HttpClientHandler handler = new HttpClientHandler()
             {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate, 
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
                 CookieContainer = _cookieContainer,
                 UseCookies = true
             };

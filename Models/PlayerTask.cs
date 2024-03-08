@@ -1,9 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OuterTube.Models.Media;
+using OuterTube.Models.MediaInformation;
+using OuterTube.Models.MediaInformation.Collections;
 
 namespace OuterTube.Models
 {
@@ -24,7 +22,7 @@ namespace OuterTube.Models
             dynamic videoDetails = player.videoDetails;
 
             Author author = new();
-            author.Title = videoDetails.author;
+            author.Name = videoDetails.author;
             author.Id = videoDetails.channelId;
 
             media.Author = author;

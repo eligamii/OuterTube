@@ -1,15 +1,15 @@
 ﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OuterTube.Models.MediaInformation.Collections;
+using System.Collections;
 
-namespace OuterTube.Models
+namespace OuterTube.Models.Media
 {
-    public class YoutubePlaylist : YoutubeMediaBase
+    /// <summary>
+    /// A playlist / album in the form of a list of medias
+    /// </summary>
+    public class YoutubePlaylist : YoutubeMediaBase, IList<YoutubeMedia>
     {
-        public static YoutubePlaylist FromJson(string json, bool isInfinite)
+        internal static YoutubePlaylist FromJson(string json, bool isInfinite)
         {
             YoutubePlaylist playlist = new();
             dynamic playlistJson = JObject.Parse(json);
@@ -31,7 +31,7 @@ namespace OuterTube.Models
 
                 YoutubeMedia media = new()
                 {
-                    Title = title,
+                    Name = title,
                     Id = videoId
                 };
 
@@ -57,13 +57,13 @@ namespace OuterTube.Models
         }
 
 
-        public static YoutubePlaylist FromMusicResponsiveListItemRenderer(dynamic musicResponsiveListItemRenderer)
+        internal static YoutubePlaylist FromMusicResponsiveListItemRenderer(dynamic musicResponsiveListItemRenderer)
         {
             YoutubePlaylist playlist = new();
             playlist.Thumbnails = MediaThumbnailCollection.FromJson(musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails);
 
             dynamic flexColums = musicResponsiveListItemRenderer.flexColumns;
-            playlist.Title = flexColums[0].musicResponsiveListItemFlexColumnRenderer.text.runs[0].text;
+            playlist.Name = flexColums[0].musicResponsiveListItemFlexColumnRenderer.text.runs[0].text;
             foreach (dynamic run in flexColums[1].musicResponsiveListItemFlexColumnRenderer.text.runs) { playlist.Subtitle += run.text; }
 
             playlist.Id = musicResponsiveListItemRenderer.navigationEndpoint.browseEndpoint.browseId;
@@ -71,12 +71,12 @@ namespace OuterTube.Models
             return playlist;
         }
 
-        public static YoutubePlaylist FromMusicTwoRowItemRenderer(dynamic musicTwoRowItemRenderer)
+        internal static YoutubePlaylist FromMusicTwoRowItemRenderer(dynamic musicTwoRowItemRenderer)
         {
             YoutubePlaylist playlist = new();
             playlist.Thumbnails = MediaThumbnailCollection.FromJson(musicTwoRowItemRenderer.thumbnailRenderer.musicThumbnailRenderer.thumbnail.thumbnails);
 
-            playlist.Title = musicTwoRowItemRenderer.title.runs[0].text;
+            playlist.Name = musicTwoRowItemRenderer.title.runs[0].text;
             foreach (dynamic run in musicTwoRowItemRenderer.subtitle.runs) { playlist.Subtitle += run.text; }
 
             playlist.Id = musicTwoRowItemRenderer.navigationEndpoint.browseEndpoint.browseId;
@@ -84,7 +84,69 @@ namespace OuterTube.Models
             return playlist;
         }
 
+        public int IndexOf(YoutubeMedia item)
+        {
+            return ((IList<YoutubeMedia>)Items).IndexOf(item);
+        }
+
+        public void Insert(int index, YoutubeMedia item)
+        {
+            ((IList<YoutubeMedia>)Items).Insert(index, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            ((IList<YoutubeMedia>)Items).RemoveAt(index);
+        }
+
+        public void Add(YoutubeMedia item)
+        {
+            ((ICollection<YoutubeMedia>)Items).Add(item);
+        }
+
+        public void Clear()
+        {
+            ((ICollection<YoutubeMedia>)Items).Clear();
+        }
+
+        public bool Contains(YoutubeMedia item)
+        {
+            return ((ICollection<YoutubeMedia>)Items).Contains(item);
+        }
+
+        public void CopyTo(YoutubeMedia[] array, int arrayIndex)
+        {
+            ((ICollection<YoutubeMedia>)Items).CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(YoutubeMedia item)
+        {
+            return ((ICollection<YoutubeMedia>)Items).Remove(item);
+        }
+
+        public IEnumerator<YoutubeMedia> GetEnumerator()
+        {
+            return ((IEnumerable<YoutubeMedia>)Items).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)Items).GetEnumerator();
+        }
+
+        /// <summary>
+        /// The list of medias of the playlist
+        /// </summary>
         public List<YoutubeMedia> Items { get; set; } = new();
-        internal string ContinuationToken { get; set; } = string.Empty;
+        /// <summary>
+        /// The continuation token of the playlist. Do not modify this value.
+        /// </summary>
+        public string ContinuationToken { get; set; } = string.Empty;
+
+        public int Count => ((ICollection<YoutubeMedia>)Items).Count;
+
+        public bool IsReadOnly => ((ICollection<YoutubeMedia>)Items).IsReadOnly;
+
+        public YoutubeMedia this[int index] { get => ((IList<YoutubeMedia>)Items)[index]; set => ((IList<YoutubeMedia>)Items)[index] = value; }
     }
 }
