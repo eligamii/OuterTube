@@ -8,7 +8,7 @@ namespace OuterTube.Models.Media.Collections
 {
     public class MusicSearchResult : IList<YoutubeElement>
     {
-        internal MusicSearchResult(string json, SearchFilter filter)
+        internal MusicSearchResult(string json, MusicSearchFilter filter)
         {
             Filter = filter;
             dynamic res = JObject.Parse(json);
@@ -20,6 +20,9 @@ namespace OuterTube.Models.Media.Collections
                                  .content
                                  .sectionListRenderer
                                  .contents as JArray ?? [];
+
+            if (contents.Where(p => ((JObject)p).ContainsKey("musicShelfRenderer")).Count() == 0)
+                return;
 
             dynamic musicShelfRenderer = ((dynamic)contents.Where(p => ((JObject)p).ContainsKey("musicShelfRenderer")).First()).musicShelfRenderer;
 
@@ -158,7 +161,7 @@ namespace OuterTube.Models.Media.Collections
         public string DidYouMeanText { get; set; } = string.Empty;
 
         public string Title { get; set; } = string.Empty;
-        public SearchFilter Filter { get; set; }
+        public MusicSearchFilter Filter { get; set; }
         /// <summary>
         /// The list of search results for the giver query and filter. 
         /// </summary>

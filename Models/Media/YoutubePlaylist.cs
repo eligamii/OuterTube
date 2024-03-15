@@ -146,7 +146,7 @@ namespace OuterTube.Models.Media
         public int Count => ((ICollection<YoutubeMedia>)Items).Count;
 
         public bool IsReadOnly => ((ICollection<YoutubeMedia>)Items).IsReadOnly;
-
+        public string SecondSubtitle { get; set; } = string.Empty;
         public YoutubeMedia this[int index] { get => ((IList<YoutubeMedia>)Items)[index]; set => ((IList<YoutubeMedia>)Items)[index] = value; }
     }
 }

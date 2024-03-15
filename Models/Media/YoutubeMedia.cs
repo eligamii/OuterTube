@@ -6,6 +6,31 @@ namespace OuterTube.Models.Media
 {
     public class YoutubeMedia : YoutubeMediaBase
     {
+        public static List<YoutubeMedia> ListFromJson(string json)
+        {
+            List<YoutubeMedia> collection = new();
+
+            dynamic obj = JObject.Parse(json);
+            foreach (dynamic item in obj.contents
+                                       .singleColumnBrowseResultsRenderer
+                                       .tabs[0]
+                                       .tabRenderer
+                                       .content
+                                       .sectionListRenderer
+                                       .contents)
+            {
+                dynamic contents = item.musicShelfRenderer.contents;
+
+                foreach (dynamic subItem in contents)
+                {
+                    collection.Add(YoutubeMedia.FromMusicResponsiveListItemRenderer(subItem.musicResponsiveListItemRenderer));
+                }
+
+            }
+
+            return collection;
+        }
+
         public static YoutubeMedia FromMusicResponsiveListItemRenderer(dynamic musicResponsiveListItemRenderer)
         {
             YoutubeMedia media = new YoutubeMedia();
