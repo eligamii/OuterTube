@@ -6,10 +6,13 @@ using System.Text;
 
 namespace OuterTube.Models.Media.Collections
 {
-    public class MusicSearchResult : IList<YoutubeElement>
+    public class SearchResult : IList<YoutubeElement>
     {
-        internal MusicSearchResult(string json, MusicSearchFilter filter)
+        private Client _requestClient;
+        internal SearchResult(string json, MusicSearchFilter filter, Client requestClient)
         {
+            _requestClient = requestClient;
+
             Filter = filter;
             dynamic res = JObject.Parse(json);
 
@@ -54,21 +57,7 @@ namespace OuterTube.Models.Media.Collections
         {
             if (HasMoreItems)
             {
-                dynamic payload = YoutubeMusicClient.BaseWebPayload;
-
-                string payloadString = payload.ToString();
-                StringContent content = new(payloadString, Encoding.UTF8);
-
-                // Create the request url
-                string requestUrl = YoutubeMusicClient._baseUrl + "/search?key=" + YoutubeMusicClient._webApiKey + "&ctoken=" + ContinuationToken + "&continuation=" + ContinuationToken + "&type=next" + "&prettyPrint=false";
-
-                Shared.HttpClient.DefaultRequestHeaders.Remove("Referrer");
-                Shared.HttpClient.DefaultRequestHeaders.Add("Referrer", "music.youtube.com");
-
-                // Make the actual request
-                var response = await Shared.HttpClient.PostAsync(requestUrl, content);
-
-                string json = await response.Content.ReadAsStringAsync();
+                string json = Shared.RequestAsync(_requestClient.BaseClientPayload, _requestClient, "search", ContinuationToken, "next");
                 dynamic continuation = JObject.Parse(json);
 
                 List<YoutubeElement> newElements = [];
