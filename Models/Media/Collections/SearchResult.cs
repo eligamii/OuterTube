@@ -8,47 +8,50 @@ namespace OuterTube.Models.Media.Collections
 {
     public class SearchResult : IList<YoutubeElement>
     {
-        private Client _requestClient;
-        internal SearchResult(string json, MusicSearchFilter filter, Client requestClient)
+        private Client? _requestClient;
+        internal SearchResult(string json = "", MusicSearchFilter filter = MusicSearchFilter.Songs, Client? requestClient = null)
         {
-            _requestClient = requestClient;
-
-            Filter = filter;
-            dynamic res = JObject.Parse(json);
-
-            JArray contents = res.contents
-                                 .tabbedSearchResultsRenderer
-                                 .tabs[0]
-                                 .tabRenderer
-                                 .content
-                                 .sectionListRenderer
-                                 .contents as JArray ?? [];
-
-            if (contents.Where(p => ((JObject)p).ContainsKey("musicShelfRenderer")).Count() == 0)
-                return;
-
-            dynamic musicShelfRenderer = ((dynamic)contents.Where(p => ((JObject)p).ContainsKey("musicShelfRenderer")).First()).musicShelfRenderer;
-
-            if(((JObject)musicShelfRenderer).ContainsKey("continuations")) ContinuationToken = musicShelfRenderer.continuations[0].nextContinuationData.continuation;
-
-            if (contents.IndexOf(musicShelfRenderer) == 1)
+            if(json != string.Empty)
             {
-                DidYouMeanTitle = ((dynamic)contents[0]).itemSectionRenderer.contents[0].didYouMeanRenderer.didYouMean.runs[0].text;
-            }
+                _requestClient = requestClient;
 
-            try { Title = musicShelfRenderer.title.runs[0].text; } catch { }
+                Filter = filter;
+                dynamic res = JObject.Parse(json);
 
-            foreach (dynamic item in musicShelfRenderer.contents)
-            {
-                if ((int)filter <= 3) // Video
-                    Results.Add(YoutubeMedia.FromMusicResponsiveListItemRenderer(item.musicResponsiveListItemRenderer));
+                JArray contents = res.contents
+                                     .tabbedSearchResultsRenderer
+                                     .tabs[0]
+                                     .tabRenderer
+                                     .content
+                                     .sectionListRenderer
+                                     .contents as JArray ?? [];
 
-                else if ((int)filter <= 5) // Author
-                    Results.Add(Author.FromMusicResponsiveListItemRenderer(item.musicResponsiveListItemRenderer));
+                if (contents.Where(p => ((JObject)p).ContainsKey("musicShelfRenderer")).Count() == 0)
+                    return;
 
-                else // Playlists
-                    Results.Add(YoutubePlaylist.FromMusicResponsiveListItemRenderer(item.musicResponsiveListItemRenderer));
+                dynamic musicShelfRenderer = ((dynamic)contents.Where(p => ((JObject)p).ContainsKey("musicShelfRenderer")).First()).musicShelfRenderer;
 
+                if (((JObject)musicShelfRenderer).ContainsKey("continuations")) ContinuationToken = musicShelfRenderer.continuations[0].nextContinuationData.continuation;
+
+                if (contents.IndexOf(musicShelfRenderer) == 1)
+                {
+                    DidYouMeanTitle = ((dynamic)contents[0]).itemSectionRenderer.contents[0].didYouMeanRenderer.didYouMean.runs[0].text;
+                }
+
+                try { Title = musicShelfRenderer.title.runs[0].text; } catch { }
+
+                foreach (dynamic item in musicShelfRenderer.contents)
+                {
+                    if ((int)filter <= 3) // Video
+                        Results.Add(YoutubeMedia.FromMusicResponsiveListItemRenderer(item.musicResponsiveListItemRenderer));
+
+                    else if ((int)filter <= 5) // Author
+                        Results.Add(Author.FromMusicResponsiveListItemRenderer(item.musicResponsiveListItemRenderer));
+
+                    else // Playlists
+                        Results.Add(YoutubePlaylist.FromMusicResponsiveListItemRenderer(item.musicResponsiveListItemRenderer));
+
+                }
             }
         }
 

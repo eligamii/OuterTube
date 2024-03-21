@@ -4,7 +4,7 @@
     {
         Episodes,
         Podcasts,
-        Titles,
+        Songs,
         Videos,
         Users,
         Artists,
@@ -19,7 +19,7 @@
         {
             MusicSearchFilter.Episodes => "EgWKAQJIAWoSEBAQERADEAQQCRAOEAoQBRAV",
             MusicSearchFilter.Podcasts => "EgWKAQJQAWoSEBAQERADEAQQCRAOEAoQBRAV",
-            MusicSearchFilter.Titles => "EgWKAQIIAWoSEBAQERADEAQQCRAOEAoQBRAV",
+            MusicSearchFilter.Songs => "EgWKAQIIAWoSEBAQERADEAQQCRAOEAoQBRAV",
             MusicSearchFilter.Videos => "EgWKAQIQAWoSEBAQERADEAQQCRAOEAoQBRAV",
             MusicSearchFilter.Albums => "EgWKAQIYAWoQEAMQBBAJEAoQBRAREBAQFQ%3D%3D",
             MusicSearchFilter.Artists => "EgWKAQIgAWoSEBAQERADEAQQCRAOEAoQBRAV",
