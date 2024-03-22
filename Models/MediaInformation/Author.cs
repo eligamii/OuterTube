@@ -7,11 +7,10 @@ namespace OuterTube.Models.MediaInformation
         internal static Author FromMusicResponsiveListItemRenderer(dynamic musicResponsiveListItemRenderer)
         {
             Author author = new();
-            author.Thumbnails = MediaThumbnailCollection.FromJson(musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails);
+            author.Thumbnails = MediaThumbnailCollection.FromThumbnails(musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails);
 
             dynamic flexColums = musicResponsiveListItemRenderer.flexColumns;
             author.Name = flexColums[0].musicResponsiveListItemFlexColumnRenderer.text.runs[0].text;
-            foreach (dynamic run in flexColums[1].musicResponsiveListItemFlexColumnRenderer.text.runs) { author.Subtitle += run.text; }
 
             author.Id = musicResponsiveListItemRenderer.navigationEndpoint.browseEndpoint.browseId;
 
@@ -29,5 +28,13 @@ namespace OuterTube.Models.MediaInformation
         /// The number of followers this channel / author has.
         /// </summary>
         public int FollowersCount { get; set; }
+        /// <summary>
+        /// True if the author is certified. (From YoutubeClient only)
+        /// </summary>
+        public bool IsCertified { get; set; } = false;
+        /// <summary>
+        /// True if the author (the channel) is a music channel.
+        /// </summary>
+        public bool IsMusicChannel { get; set; } = true;
     }
 }

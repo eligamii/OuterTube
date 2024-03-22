@@ -16,7 +16,7 @@ namespace OuterTube
 
     public class YoutubeMusicClient
     {
-        private readonly RequestTarget _target = RequestTarget.YoutubeMusic;
+        private readonly static RequestTarget _target = RequestTarget.YoutubeMusic;
 
         /// <summary>
         /// Search on Youtube Music from a suggestion.
@@ -146,7 +146,7 @@ namespace OuterTube
             dynamic payload = _target.WebClient.BaseClientPayload;
             payload.input = query;
 
-            string json = await Shared.RequestAsync(payload, _target.WebClient, "get_search_suggestions");
+            string json = await Shared.RequestAsync(payload, _target.WebClient, "music/get_search_suggestions");
 
             return SuggestionCollection.FromYoutubeMusicJson(json);
         }

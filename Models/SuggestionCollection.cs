@@ -15,20 +15,22 @@ namespace OuterTube.Models
 
             dynamic obj = JObject.Parse(json);
 
+            if(!((JObject)obj).ContainsKey("contents")) return collection;
+
             foreach (dynamic suggestion in obj.contents[0]
-                                              .searchSuggestionSectionRenderer
+                                              .searchSuggestionsSectionRenderer
                                               .contents)
             {
-                collection.TextSuggestions.Add(Suggestion.FromSearchSuggestionRenderer(suggestion));
+                collection.TextSuggestions.Add(Suggestion.FromSearchSuggestionRenderer(suggestion.searchSuggestionRenderer));
             }
 
             if (((JArray)obj.contents).Count() > 1)
             {
                 foreach (dynamic suggestion in obj.contents[1]
-                                                 .searchSuggestionSectionRenderer
+                                                 .searchSuggestionsSectionRenderer
                                                  .contents)
                 {
-                    collection.MediaSuggestions.Add(Suggestion.FromMusicResponsiveListItemRenderer(suggestion));
+                    collection.MediaSuggestions.Add(Suggestion.FromMusicResponsiveListItemRenderer(suggestion.musicResponsiveListItemRenderer));
                 }
             }
 

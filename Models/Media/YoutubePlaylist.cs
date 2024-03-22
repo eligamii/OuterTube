@@ -60,7 +60,7 @@ namespace OuterTube.Models.Media
         internal static YoutubePlaylist FromMusicResponsiveListItemRenderer(dynamic musicResponsiveListItemRenderer)
         {
             YoutubePlaylist playlist = new();
-            playlist.Thumbnails = MediaThumbnailCollection.FromJson(musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails);
+            playlist.Thumbnails = MediaThumbnailCollection.FromThumbnails(musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails);
 
             dynamic flexColums = musicResponsiveListItemRenderer.flexColumns;
             playlist.Name = flexColums[0].musicResponsiveListItemFlexColumnRenderer.text.runs[0].text;
@@ -74,7 +74,7 @@ namespace OuterTube.Models.Media
         internal static YoutubePlaylist FromMusicTwoRowItemRenderer(dynamic musicTwoRowItemRenderer)
         {
             YoutubePlaylist playlist = new();
-            playlist.Thumbnails = MediaThumbnailCollection.FromJson(musicTwoRowItemRenderer.thumbnailRenderer.musicThumbnailRenderer.thumbnail.thumbnails);
+            playlist.Thumbnails = MediaThumbnailCollection.FromThumbnails(musicTwoRowItemRenderer.thumbnailRenderer.musicThumbnailRenderer.thumbnail.thumbnails);
 
             playlist.Name = musicTwoRowItemRenderer.title.runs[0].text;
             foreach (dynamic run in musicTwoRowItemRenderer.subtitle.runs) { playlist.Subtitle += run.text; }

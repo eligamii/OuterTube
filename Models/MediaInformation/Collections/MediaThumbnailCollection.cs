@@ -2,7 +2,7 @@
 {
     public class MediaThumbnailCollection
     {
-        public static MediaThumbnailCollection FromJson(dynamic thumbnails)
+        public static MediaThumbnailCollection FromThumbnails(dynamic thumbnails)
         {
             MediaThumbnailCollection collection = new();
             foreach (object thumbnailJson in thumbnails)
