@@ -30,7 +30,7 @@ namespace OuterTube.Models.Media
             media.Views = int.TryParse(string.Concat(((string)videoRenderer.viewCountText.simpleText).Where(char.IsDigit).ToList()), out int res) ? res : 0;
 
             media.Subtitle = videoRenderer.lengthText.simpleText + " • " +
-                             videoRenderer.publicshedTimeText.simpleText + " • " +
+                             videoRenderer.publishedTimeText.simpleText + " • " +
                              videoRenderer.viewCountText.simpleText;
 
             media.LengthText = videoRenderer.lengthText.simpleText;

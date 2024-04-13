@@ -14,7 +14,7 @@ using System.Web;
 namespace OuterTube
 {
 
-    public class YoutubeMusicClient
+    public class YoutubeMusic
     {
         private readonly static RequestTarget _target = RequestTarget.YoutubeMusic;
 
@@ -27,7 +27,7 @@ namespace OuterTube
         /// <param name="suggestion">The suggestion to search from</param>
         /// <param name="filter">The filter of the search. Will always have an effect even when the Suggestion is not of type SuggestionType.Text</param>
         /// <returns>A SearchResult object containing the search results and methods to get more items.</returns>
-        public async Task<SearchResult> SearchAsync(Suggestion suggestion, MusicSearchFilter filter = MusicSearchFilter.Songs)
+        public async static Task<SearchResult> SearchAsync(Suggestion suggestion, MusicSearchFilter filter = MusicSearchFilter.Songs)
         {
             switch (suggestion.SuggestionType)
             {
@@ -58,7 +58,7 @@ namespace OuterTube
         /// <param name="query">The query of the search</param>
         /// <param name="filter">The filter of the search. Default is Songs</param>
         /// <returns>A SearchResult object containing the search results and methods to get more items.</returns>
-        public async Task<SearchResult> SearchAsync(string query, MusicSearchFilter filter = MusicSearchFilter.Songs)
+        public async static Task<SearchResult> SearchAsync(string query, MusicSearchFilter filter = MusicSearchFilter.Songs)
         {
             // Create the payload for the request
             dynamic payload = _target.WebClient.BaseClientPayload;
@@ -74,7 +74,7 @@ namespace OuterTube
         /// Get the homepage of the Youtube Music website
         /// </summary>
         /// <returns>The homepage as a collection of MusicShelf objects</returns>
-        public async Task<MediaShelfCollection> GetHomeAsync()
+        public async static Task<MediaShelfCollection> GetHomeAsync()
         {
             dynamic payload = _target.WebClient.BaseClientPayload;
             payload.browseId = "FEmusic_home";
@@ -89,7 +89,7 @@ namespace OuterTube
         /// </summary>
         /// <param name="playlist">The playlist to get infomation from.</param>
         /// <returns>A PLaylistInfromation object containing the additional information of the playlist.</returns>
-        public async Task<PlaylistInformation> GetPlaylistInfoAsync(YoutubePlaylist playlist)
+        public async static Task<PlaylistInformation> GetPlaylistInfoAsync(YoutubePlaylist playlist)
         {
             dynamic payload = _target.WebClient.BaseClientPayload;
             payload.browseId = playlist.Id;
@@ -103,7 +103,7 @@ namespace OuterTube
         /// </summary>
         /// <param name="id">The videoId of the playlist</param>
         /// <returns></returns>
-        public async Task<YoutubePlaylist> GetPlaylistAsync(string id)
+        public async static Task<YoutubePlaylist> GetPlaylistAsync(string id)
         {
             dynamic payload = _target.WebClient.BaseClientPayload;
             payload.playlistId = id;
@@ -119,14 +119,14 @@ namespace OuterTube
         /// </summary>
         /// <param name="video">The media to get the player.</param>
         /// <returns>A Player object containing the list of available formats and additionnal information about the media</returns>
-        public async Task<Player> GetPlayerAsync(YoutubeMedia video) => await GetPlayerAsync(video.Id);
+        public async static Task<Player> GetPlayerAsync(YoutubeMedia video) => await GetPlayerAsync(video.Id);
 
         /// <summary>
         /// Get the player of a media.
         /// </summary>
         /// <param name="videoId">The id of the media to get the player.</param>
         /// <returns>A Player object containing the list of available formats and additionnal information about the media</returns>
-        public async Task<Player> GetPlayerAsync(string videoId)
+        public async static Task<Player> GetPlayerAsync(string videoId)
         {
             dynamic payload = _target.IOSClient.BaseClientPayload;
             payload.videoId = videoId;
@@ -141,7 +141,7 @@ namespace OuterTube
         /// </summary>
         /// <param name="query">The query to get suggestions from.</param>
         /// <returns></returns>
-        public async Task<SuggestionCollection> GetSuggestionsAsync(string query)
+        public async static Task<SuggestionCollection> GetSuggestionsAsync(string query)
         {
             dynamic payload = _target.WebClient.BaseClientPayload;
             payload.input = query;

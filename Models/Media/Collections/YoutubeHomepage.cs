@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.CSharp.RuntimeBinder;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,16 @@ namespace OuterTube.Models.Media.Collections
 
             foreach(dynamic item in contents)
             {
-                dynamic renderer = item.richItemRenderer.content;
+                dynamic renderer;
+
+                try
+                {
+                    renderer =item.richItemRenderer.content;
+                }
+                catch (RuntimeBinderException)
+                {
+                    continue;
+                }
                 JObject rendererJson = (JObject)renderer;
 
                 if (rendererJson.ContainsKey("adSlotRenderer")) continue;
