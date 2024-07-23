@@ -1,18 +1,20 @@
 ﻿using OuterTube.Enums;
-using OuterTube.Models.Media.Collections;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace OuterTube
 {
     /// <summary>
-    /// everything used in both Youtube and Youtube Music are stored here
+    /// Everything used in both Youtube and Youtube Music are stored here
     /// </summary>
     public static class Shared
     {
-        internal static HttpClient HttpClient { get; set; } = CreateHttpClient();
+        public static RequestsClient RequestsClient { get; set; } = new HttpClientWrapper();
+
+        public static void SetCookies(LoginData? loginData = null, VisitorData? visitorData = null)
+        {
+            if (loginData is null && visitorData is null) throw new ArgumentNullException();
+            RequestsClient.SetAuthentificationCookies(loginData, visitorData);
+        }
+
         internal const string RADIO_PLAYLIST_PREFIX = "RDAMVM";
         internal const string MY_MIX_PLAYLIST = "RDMM";
 
@@ -30,30 +32,10 @@ namespace OuterTube
             if (ctoken != string.Empty) requestUrl += "&ctoken=" + ctoken + "&continuation=" + ctoken;
             if (type != string.Empty) requestUrl += "&type=" + type;
 
-            string payloadString = payload.ToString();
-            StringContent content = new(payloadString, Encoding.UTF8);
+            RequestsClient.SetReferrer(client.Referrer);
+            string response = await RequestsClient.POSTAsync(requestUrl, payload.ToString());
 
-            HttpClient.DefaultRequestHeaders.Remove("Referrer");
-            HttpClient.DefaultRequestHeaders.Add("Referrer", client.Referrer);
-
-            var response = await HttpClient.PostAsync(requestUrl, content);
-
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        private static HttpClient CreateHttpClient()
-        {
-            HttpClientHandler handler = new HttpClientHandler()
-            {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate, // Will divide the response time by ~8
-                UseCookies = true
-            };
-
-            HttpClient client = new(handler);
-            client.DefaultRequestHeaders.Connection.Add("Keep-Alive"); // Will also highly decrase the response time
-            client.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-
-            return client;
+            return response;
         }
     }
 }

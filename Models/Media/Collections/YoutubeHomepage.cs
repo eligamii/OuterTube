@@ -32,13 +32,14 @@ namespace OuterTube.Models.Media.Collections
 
                 try
                 {
-                    renderer =item.richItemRenderer.content;
+                    renderer = item.richItemRenderer.content;
                 }
                 catch (RuntimeBinderException)
                 {
                     continue;
                 }
                 JObject rendererJson = (JObject)renderer;
+
 
                 if (rendererJson.ContainsKey("adSlotRenderer")) continue;
 
@@ -49,13 +50,14 @@ namespace OuterTube.Models.Media.Collections
                 // Shorts, playlists and contination
             }
 
-
+            homepage.NeedsACookie = homepage.Items.Count == 0;
             return homepage;
         }
         public List<YoutubeMedia> Videos { get; set; } = [];
         public List<YoutubeMedia> Shorts { get; set; } = [];
         public List<YoutubePlaylist> Playlists { get; set; } = [];
         public List<YoutubeMediaBase> Items => [..Playlists, ..Videos, ..Shorts];
+        public bool NeedsACookie {  get; private set; } 
         public string ContinuationToken { get; internal set; } = string.Empty;
     }
 }
