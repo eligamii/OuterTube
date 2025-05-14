@@ -9,6 +9,9 @@ namespace OuterTube
     {
         public static RequestsClient RequestsClient { get; set; } = new HttpClientWrapper();
 
+        /// <summary>
+        /// This does not work
+        /// </summary>
         public static void SetCookies(LoginData? loginData = null, VisitorData? visitorData = null)
         {
             if (loginData is null && visitorData is null) throw new ArgumentNullException();
